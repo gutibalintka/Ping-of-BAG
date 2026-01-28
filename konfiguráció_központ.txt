@@ -1,0 +1,562 @@
+ena
+clo set 12:00:00 24 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host R1
+banner motd "Maganterulet!"
+securit pass min 8
+login block-for 120 attempts 5 within 15
+line con 0
+pass cisco123
+login
+logging syn
+exe 10
+exit
+line vty 0 15
+pass cisco123
+login
+exe 10
+login local
+transport input ssh
+exit
+ip domain-name Thermofisher.com
+crypto key gen rsa 
+yes
+1024
+user RG password Cisco123 priv 15
+ip ssh ver 2
+ip route 0.0.0.0 0.0.0.0 10.10.10.1
+int Se0/1/0
+ip add 10.10.10.1 255.255.255.252
+des ISP fele
+no sh
+int Se0/2/1
+ip add 10.10.20.2 255.255.255.252
+des R3 fele
+no sh
+int Se0/2/0
+ip add 10.10.30.2 255.255.255.252
+des R2 fele
+clo rate 4000000
+no sh
+int Gig0/0/1.100
+enc dot 100
+ip add 172.16.10.1 255.255.255.0
+des vlan 100 átjáró
+ip helper 172.16.24.254
+no sh
+des SW1 fele
+int Gig0/0/1
+no sh
+ex
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+router ospf 10
+router-id 1.1.1.1
+pass Se0/1/0
+network 10.10.20.0 0.0.0.3 area 0
+network 10.10.30.0 0.0.0.3 area 0
+network 172.16.10.0 0.0.0.255 area 0
+def ori
+
+
+ena
+clo set 12:00:00 24 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host R2
+banner motd "Maganterulet!"
+securit pass min 8
+login block-for 120 attempts 5 within 15
+line con 0
+pass cisco123
+login
+logging syn
+exe 10
+exit
+line vty 0 15
+pass cisco123
+login
+exe 10
+login local
+transport input ssh
+exit
+ip domain-name Thermofisher.com
+crypto key gen rsa
+yes 
+1024
+user RG password Cisco123 priv 15
+int Se0/0/1
+ip add 10.10.40.2 255.255.255.252
+des R2 fele
+no sh
+int Se0/0/0
+ip add 10.10.20.1 255.255.255.252
+des R1 fele
+clo rate 4000000
+no sh
+int Gig0/0
+ip add 172.16.100.1 255.255.192.0
+no sh
+des SW4 fele
+int Gig0/1
+ip add 172.16.24.1 255.255.248.0
+no sh
+des SW5 fele
+int Gig0/1
+no sh
+int Gig0/0
+no sh
+ex
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+ip access-list extended TFTP_block
+deny udp 172.16.64.0 0.0.63.255 host 172.16.24.254 eq 69
+permit ip any any
+ex
+int Gig0/0
+ip access-group TFTP_block in
+exit
+ip nat inside source static 172.16.24.254 209.165.205.5
+int Gig0/0
+ip nat inside
+int Se0/0/0
+ip nat inside
+int Se0/0/1
+ip nat inside
+ex
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+router ospf 10
+router-id 2.2.2.2
+network 10.10.20.0 0.0.0.3 area 0
+network 10.10.40.0 0.0.0.3 area 0
+network 172.16.24.0 0.0.7.255 area 0
+network 172.16.64.0 0.0.63.255 area 0
+
+
+ena
+clo set 12:00:00 13 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host R3
+banner motd "Maganterulet!"
+securit pass min 8
+login block-for 120 attempts 5 within 15
+line con 0
+pass cisco123
+login
+logging syn
+exe 10
+exit
+line vty 0 15
+pass cisco123
+login
+exe 10
+login local
+transport input ssh
+exit
+ip domain-name Thermofisher.com
+crypto key gen rsa
+yes 
+1024
+int Se0/0/1
+ip add 10.10.40.1 255.255.255.252
+clo rate 4000000
+des R2 fele
+no sh
+int Se0/0/0
+ip add 10.10.30.1 255.255.255.252
+des R1 fele
+no sh
+int Gig0/1
+ip add 172.16.20.1 255.255.192.0 
+no sh
+des Konferencia_R fele
+int Gig0/1
+no sh
+ex
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+router ospf 10
+router-id 3.3.3.3
+network 10.10.30.0 0.0.0.3 area 0
+network 10.10.40.0 0.0.0.3 area 0
+network 172.16.20.0 0.0.0.255 area 0
+
+
+ena
+clo set 12:00:00 13 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host ISP
+banner motd "Maganterulet!"
+int Se0/0/0
+ip add 10.10.10.1 255.255.255.252
+des R1 fele
+clo rate 4000000
+no sh
+ex
+ip route 0.0.0.0 0.0.0.0 10.10.10.2
+
+ena
+clo set 12:00:00 13 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host SW1
+banner motd "Maganterulet!"
+line con 0
+pass cisco123
+login
+logging syn
+exe 10
+exit
+line vty 0 15
+pass cisco123
+login
+exe 10
+login local
+transport input ssh
+exit
+ip domain-name Thermofisher.com
+crypto key gen rsa
+yes 
+1024
+user RG password Cisco123 priv 15
+spanning-tree mode rapid-pvst
+spanning-tree portfast default
+spanning-tree portfast bpduguard default
+vlan 100
+name WORKSPACE
+int range Fa0/1,Fa0/4
+switchport mode trunk
+swit trunk all vlan 100,300,400
+channel-group 1 mode passive
+ex
+int range Fa0/2,Fa0/3
+switchport mode trunk
+swit trunk all vlan 100,300,400
+channel-group 2 mode active
+ex
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+ip def 172.16.10.1
+int Gig0/1
+swit mod trunk
+swit trunk all vlan 100
+int vlan 100
+ip add 172.16.10.100 255.255.255.0
+no sh
+ex
+vtp mod ser
+vlan 999
+name BLACKHOLE
+int range Fa0/6,Fa0/8-13, Fa0/15-20, Fa0/22-23, Gig0/2
+swit acc vlan 999
+sh
+
+
+
+ena
+clo set 12:00:00 13 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host SW2
+banner motd "Maganterulet!"
+line con 0
+pass cisco123
+login
+logging syn
+exe 10
+exit
+line vty 0 15
+pass cisco123
+login
+exe 10
+login local
+transport input ssh
+exit
+ip domain-name Thermofisher.com
+crypto key gen rsa
+yes 
+1024
+user RG password Cisco123 priv 15
+spanning-tree mode rapid-pvst
+spanning-tree portfast default
+spanning-tree portfast bpduguard default
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+vlan 100
+name WORKSPACE
+int range Fa0/1, Fa0/4
+switchport mode trunk
+swit trunk all vlan 100,300,400
+channel-group 2 mode passive
+ex
+int range Fa0/2-3
+switchport mode trunk
+swit trunk all vlan 100,300,400
+channel-group 3 mode active
+ex
+int vlan 100
+ip add 172.16.10.101 255.255.255.0
+no sh
+ex
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+ip def 172.16.10.1
+int Fa0/7
+swit acc vlan 100
+int Fa0/14
+swit acc vlan 100
+int Fa0/21
+swit acc vlan 100
+int Fa0/24
+swit acc vlan 100
+ex
+vtp mod ser
+vlan 999
+name BLACKHOLE
+int range Fa0/6, Fa0/8-13, Fa0/15-20, Fa0/22-23, Gig0/1, Gig0/2
+swit acc vlan 999
+sh
+
+
+
+
+ena
+clo set 12:00:00 13 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host SW3
+banner motd "Maganterulet!"
+securit pass min 8
+line con 0
+pass cisco123
+login
+logging syn
+exe 10
+exit
+line vty 0 15
+pass cisco123
+login
+exe 10
+login local
+transport input ssh
+exit
+ip domain-name Thermofisher.com
+crypto key gen rsa
+yes 
+1024
+user RG password Cisco123 priv 15
+spanning-tree mode rapid-pvst
+spanning-tree portfast default
+spanning-tree portfast bpduguard default
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+vlan 100
+name WORKSPACE
+int range Fa0/2-3
+switchport mode trunk
+swit trunk all vlan 100,300,400
+channel-group 1 mode active
+ex
+int range Fa0/1,Fa0/4
+switchport mode trunk
+swit trunk all vlan 100,300,400
+channel-group 3 mode passive
+ex
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+int vlan 100
+ip add 172.16.10.102 255.255.255.0
+no sh
+ex
+ip def 172.16.10.1
+int Fa0/7
+swit acc vlan 100
+int Fa0/14
+swit acc vlan 100
+int Fa0/21
+swit acc vlan 100
+int Fa0/24
+swit acc vlan 100
+ex
+vtp mod ser
+vlan 999
+name BLACKHOLE
+int range Fa0/6, Fa0/8-13, Fa0/15-20, Fa0/22-23, Gig0/1, Gig0/2
+swit acc vlan 999
+sh
+
+
+
+ena
+clo set 12:00:00 13 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host SW4
+banner motd "Maganterulet!"
+vlan 100
+name WORKSPACE
+line con 0
+pass cisco123
+login
+logging syn
+exe 10
+exit
+line vty 0 15
+pass cisco123
+login
+exe 10
+login local
+transport input ssh
+exit
+ip domain-name Thermofisher.com
+crypto key gen rsa
+yes 
+1024
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit
+ip def 172.16.24.1
+user RG password Cisco123 priv 15
+int vlan 300
+ip add 172.16.24.100 255.255.248.0
+no sh
+ex
+vtp mod ser
+vlan 999
+name BLACKHOLE
+int range Fa0/2-23
+swit acc vlan 999
+sh
+
+ena
+clo set 12:00:00 13 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host SW5
+banner motd "Maganterulet!"
+securit pass min 8
+line con 0
+pass cisco123
+login
+logging syn
+exe 10
+exit
+line vty 0 15
+pass cisco123
+login
+exe 10
+login local
+transport input ssh
+exit
+ip domain-name Thermofisher.com
+crypto key gen rsa
+yes 
+1024
+user RG priv 15 secret Cisco123
+ip access-list standard SSH_tiltas
+permit host 172.16.24.200
+deny any
+ex
+line vty 0 15
+access-class SSH_tiltas in
+exit 
+ip def 172.16.64.1
+int Gig0/1
+swit mod trunk
+swit trunk all vlan 100
+ex
+int vlan 400
+ip add 172.16.64.100 255.255.192.0
+no sh
+ex
+vlan 999
+name BLACKHOLE
+int range Fa0/4-23, Gig0/2
+swit acc vlan 999
+sh
+
+
+
+
+
+
+
+
+
+
