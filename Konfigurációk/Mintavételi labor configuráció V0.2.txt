@@ -1,0 +1,385 @@
+M_R Folyosó
+
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host M_R_folyoso
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+!alapkonfig vege-------
+
+int g0/0
+ip add 192.168.70.1 255.255.255.224
+no sh
+ip help 192.168.40.5
+des M_MLS fele
+
+int g0/1
+no sh
+des M_S_RG fele
+
+int g0/1.99
+encapsulation dot1Q 99 native
+ip add 192.168.90.1 255.255.255.224
+des vlan 99 atjaroja
+
+int g0/1.40
+encapsulation dot1Q 40
+ip add 192.168.40.1 255.255.255.224
+des vlan 40 atjaroja
+
+int g0/1.60
+encapsulation dot1Q 60
+ip add 192.168.60.1 255.255.255.224
+ip help 192.168.40.5
+des vlan 60 atjaroja
+ex
+
+ex
+!portok es vlanok-----------
+
+
+
+
+
+M_S_RG
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host M_S_RG
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+!alapkonfig vege-------
+
+vlan 99
+name RG
+vlan 40
+name Szerver_szoba
+vlan 60
+name Raktar
+
+
+
+
+int r g0/1-2
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 40,60,99
+ex
+
+int f0/24
+swit mod acc
+swit acc vlan 99
+exit
+
+int f0/23
+swit mod acc
+swit acc vlan 40
+exit
+
+int r f0/2-3
+swit mod acc
+swit acc vlan 60
+exit
+
+int vlan 99
+ip add 192.168.90.2
+no sh
+
+!vlan konfigok-----------
+
+
+
+
+
+
+
+M_MLS_MGY
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host M_MLS_MGY
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+ip routing
+
+!alapkonfig-----------
+
+int g1/0/24
+no switchport
+ip add 192.168.70.2 255.255.255.224
+no sh
+des M_R_folyoso fele
+sw
+
+vlan 50
+name Iroda 
+vlan 30
+name Tiszta_szoba
+vlan 20
+name Mintagyujto_labor
+vlan 10
+name ebedlo
+
+int r g1/0/23,g1/0/22
+swit mod trunk 
+swit nonego
+swit trunk all vlan 10,20,30,50
+
+int r g1/0/1-7
+swit mod acc
+swit acc vlan 20
+ex
+
+int vlan 10
+ip add 192.168.80.1 255.255.255.224
+ip help 192.168.40.5
+des vlan 10 atjaroja
+ex
+
+int vlan 20
+ip add 192.168.20.1 255.255.255.224
+ip help 192.168.40.5
+des vlan 20 atjaroja
+ex
+
+int vlan 30
+ip add 192.168.30.1 255.255.255.224
+ip help 192.168.40.5
+des vlan 30 atjaroja
+ex
+
+int vlan 50
+ip add 192.168.50.1 255.255.255.224
+ip help 192.168.40.5
+des vlan 50 atjaroja
+
+
+
+M_S_Iroda
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host M_S_Iroda
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+!alapkonfig vege-------
+
+vlan 50
+name Iroda 
+vlan 30
+name Tiszta_szoba
+vlan 20
+name Mintagyujto_labor
+vlan 10
+name ebedlo
+
+int g0/2
+swit mod trunk
+swit nonego
+swit trunk all vlan 10,20,30,50
+ex
+
+int r f0/1-6,g0/1
+swit mod acc
+swit acc vlan 50
+
+!vlan konfigok-----------
+
+
+M_S_Tszoba
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host M_S_Tszoba
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+!alapkonfig vege-------
+
+vlan 50
+name Iroda 
+vlan 30
+name Tiszta_szoba
+vlan 20
+name Mintagyujto_labor
+vlan 10
+name ebedlo
+
+int g0/1
+swit mod trunk
+swit nonego
+swit trunk all vlan 10,20,30,50
+ex
+
+int r f0/1-4
+swit mod acc 
+swit acc vlan 30
+
+int g0/2
+swit mod acc 
+swit acc vlan 10
+
+
+!vlan konfigok-----------
+
+
+
+
+
+
+Forgalom irányítás
+M_R_folyoso
+
+router ospf 10
+router-id 1.1.1.1
+netw 192.168.40.1 0.0.0.31 area 10
+netw 192.168.90.1 0.0.0.31 area 10
+netw 192.168.60.1 0.0.0.31 area 10
+netw 192.168.70.1 0.0.0.31 area 0
+passive-interface g0/1
+end
+
+M_MLS_MGY
+
+router ospf 10
+router-id 2.2.2.2
+netw 192.168.10.1 0.0.0.31 area 10
+netw 192.168.20.1 0.0.0.31 area 10
+netw 192.168.30.1 0.0.0.31 area 10
+netw 192.168.50.1 0.0.0.31 area 10
+netw 192.168.70.1 0.0.0.31 area 0
+passive-interface g1/0/1
+passive-interface g1/0/2
+passive-interface g1/0/3
+passive-interface g1/0/4
+passive-interface g1/0/5
+passive-interface g1/0/6
+passive-interface g1/0/7
+passive-interface g1/0/8
+passive-interface g1/0/9
+passive-interface g1/0/10
+passive-interface g1/0/11
+passive-interface g1/0/12
+passive-interface g1/0/13
+passive-interface g1/0/14
+passive-interface g1/0/15
+passive-interface g1/0/16
+passive-interface g1/0/17
+passive-interface g1/0/18
+passive-interface g1/0/19
+passive-interface g1/0/20
+passive-interface g1/0/21
+passive-interface g1/0/22
+passive-interface g1/0/23
+
+end
+
+
+
+
+
+ 
+
+
