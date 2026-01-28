@@ -1,0 +1,35 @@
+R_Konferencia
+
+ena
+clo set 12:00:00 27 jan 2026
+conf t
+host R_Konferencia
+ena sec Class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+2048
+ip ssh ver 2
+
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+ipv6 uni
+

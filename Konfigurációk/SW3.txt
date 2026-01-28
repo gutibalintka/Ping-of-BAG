@@ -1,0 +1,27 @@
+SW3
+
+ena
+clo set 12:00:00 28 jan 2026
+conf t
+host SW3
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
