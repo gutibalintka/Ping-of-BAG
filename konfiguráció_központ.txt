@@ -45,6 +45,9 @@ enc dot 100
 ip add 172.16.10.1 255.255.255.0
 des vlan 100 átjáró
 ip helper 172.16.24.254
+standby 10 ip 172.16.10.1
+standby 10 priority 150
+standby 10 preempt
 no sh
 des SW1 fele
 int Gig0/0/1
@@ -190,7 +193,7 @@ ip add 10.10.40.1 255.255.255.252
 clo rate 4000000
 des R2 fele
 no sh
-int Se0/0/0
+int Se0/1/1
 ip add 10.10.30.1 255.255.255.252
 des R1 fele
 no sh
@@ -200,6 +203,12 @@ no sh
 des Konferencia_R fele
 int Gig0/1
 no sh
+int Gig0/0.100
+enc dot 100
+ip add 172.16.10.3 255.255.255.0
+standby 10 ip 172.16.10.1
+standby 10 priority 120
+standby 10 preempt
 ex
 ip access-list standard SSH_tiltas
 permit host 172.16.24.200
@@ -438,6 +447,8 @@ int vlan 100
 ip add 172.16.10.102 255.255.255.0
 no sh
 ex
+vlan 100
+ex
 ip def 172.16.10.1
 int Fa0/7
 swit acc vlan 100
@@ -496,6 +507,8 @@ int vlan 300
 ip add 172.16.24.100 255.255.248.0
 no sh
 ex
+vlan 300
+ex
 vtp mod ser
 vlan 999
 name BLACKHOLE
@@ -524,6 +537,9 @@ exe 10
 login local
 transport input ssh
 exit
+vlan 400
+ex
+
 ip domain-name Thermofisher.com
 crypto key gen rsa
 yes 
@@ -550,6 +566,55 @@ name BLACKHOLE
 int range Fa0/4-23, Gig0/2
 swit acc vlan 999
 sh
+
+ena
+clo set 12:00:00 13 jan 2026
+conf t
+ena sec class123
+no ip domain-l
+host SW6
+banner motd "Maganterulet!"
+securit pass min 8
+line con 0
+pass cisco123
+login
+logging syn
+exe 10
+exit
+line vty 0 15
+pass cisco123
+login
+exe 10
+login local
+transport input ssh
+exit
+ip domain-name Thermofisher.com
+crypto key gen rsa
+yes 
+1024
+user RG priv 15 secret Cisco123
+ip def 172.16.20.1
+int Gig0/1
+no sh
+ex
+int vlan 200
+ip add 172.16.20.100 255.255.255.0
+no sh
+ex
+vlan 200
+ex
+vlan 999
+name BLACKHOLE
+int range Fa0/2-23
+swit acc vlan 999
+sh
+
+
+
+
+
+
+
 
 
 
