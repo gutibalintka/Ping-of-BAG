@@ -307,6 +307,16 @@ name BLACKHOLE
 int range Fa0/6,Fa0/8-13, Fa0/15-20, Fa0/22-23, Gig0/2
 swit acc vlan 999
 sh
+ex
+int range Fa0/1-4, Gig0/1, Gig0/2
+ip dhcp snooping trust
+ex
+ip dhcp snooping trust vlan 100
+ex
+ip arp inspection vlan 100
+int range Fa0/1-4, Gig0/1, Gig0/2
+ip arp inspection trust
+
 
 
 
@@ -384,6 +394,15 @@ name BLACKHOLE
 int range Fa0/6, Fa0/8-13, Fa0/15-20, Fa0/22-23, Gig0/1, Gig0/2
 swit acc vlan 999
 sh
+ex
+int range Fa0/1-4
+ip dhcp snooping trust
+ex
+ip dhcp snooping trust vlan 100
+ex
+ip arp inspection vlan 100
+int range Fa0/1-4
+ip arp inspection trust
 
 
 
@@ -465,6 +484,15 @@ name BLACKHOLE
 int range Fa0/6, Fa0/8-13, Fa0/15-20, Fa0/22-23, Gig0/1, Gig0/2
 swit acc vlan 999
 sh
+ex
+int range Fa0/1-4
+ip dhcp snooping trust
+ex
+ip dhcp snooping trust vlan 100
+ex
+ip arp inspection vlan 100
+int range Fa0/1-4
+ip arp inspection trust
 
 
 
@@ -539,7 +567,6 @@ transport input ssh
 exit
 vlan 400
 ex
-
 ip domain-name Thermofisher.com
 crypto key gen rsa
 yes 
@@ -566,6 +593,12 @@ name BLACKHOLE
 int range Fa0/4-23, Gig0/2
 swit acc vlan 999
 sh
+int Gig0/1
+ip dhcp snooping trust
+ex
+int Gig0/1
+ip arp inspection trust
+
 
 ena
 clo set 12:00:00 13 jan 2026
