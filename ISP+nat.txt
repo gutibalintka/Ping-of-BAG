@@ -1,0 +1,180 @@
+Isp_KP
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host ISP_KP
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+int s0/1/0
+ip add 207.158.10.1 255.255.255.252
+no sh
+
+int s0/2/0
+ip add 10.10.110.1 255.255.255.252
+no sh
+
+
+Isp_ML
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host ISP_ML
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+int s0/1/0
+ip add 207.158.20.1 255.255.255.252
+no sh
+
+int s0/2/0
+ip add 10.10.110.2 255.255.255.252
+no sh
+
+int s0/1/1
+ip add 10.10.130.1 255.255.255.252
+no sh
+
+Isp_FL
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host ISP_Fl
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+int s0/1/0
+ip add 207.158.30.1 255.255.255.252
+ipv6 add 2001:db8:abcd:1::1/64
+no sh
+
+int s0/1/1
+ip add 10.10.130.2 255.255.255.252
+no sh
+
+
+PAT
+
+
+KP
+
+
+ML
+int g0/0
+ip nat inside
+
+int s0/0/0
+ip nat outside
+ex
+acces-list 1 permit 10.10.1.0 0.0.0.255
+acces-list 1 permit 10.10.2.0 0.0.0.255
+
+ip nat inside source list 1 int s0/0/0 overload
+
+ip route 0.0.0.0 0.0.0.0 207.158.20.1
+
+FL
+
+int g0/0/0
+ip nat inside
+
+int s0/1/0
+ip nat inside
+
+int s0/2/0
+ip nat outside
+ex
+acces-list 1 permit 192.168.10 0.0.0.255
+acces-list 1 permit 192.168.20 0.0.0.255
+acces-list 1 permit 192.168.30 0.0.0.255
+acces-list 1 permit 192.168.40 0.0.0.255
+acces-list 1 permit 192.168.50 0.0.0.255
+acces-list 1 permit 192.168.110 0.0.0.255
+acces-list 1 permit 192.168.120 0.0.0.255
+acces-list 1 permit 192.168.130 0.0.0.255
+
+
+
+ip nat inside source list 1 int s0/2/0 overload
+
+ip route 0.0.0.0 0.0.0.0 207.158.30.1
+
+ASA
+
+object network server-net
+host 172.16.24.254
+nat (INSIDE,OUTSIDE) static 207.158.10.2
+
+object network INSIDE-NET
+subnet 172.16.0.0 255.255.128.0
+nat (INSIDE,OUTSIDE) dynamic interface
+
+
+
+
