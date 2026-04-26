@@ -1,0 +1,74 @@
+crypto isakmp policy 10
+ encr aes
+ hash md5
+ authentication pre-share
+ group 2
+
+crypto isakmp key ML_FL_key address 207.158.30.2
+
+crypto ipsec transform-set ML_FL_TSET esp-aes 128 esp-md5-hmac
+
+crypto map ML_MAP 10 ipsec-isakmp
+ set peer 207.158.30.2
+ set transform-set ML_FL_TSET
+ match address ML_FL_ACL
+
+interface s0/0/0
+crypto map ML_MAP
+
+
+interface Tunnel0
+ ip address 10.100.100.1 255.255.255.252
+ tunnel source s0/0/0
+ tunnel destination 207.158.30.2
+
+ip access-list extended ML_FL_ACL
+ permit gre host 207.158.20.2 host 207.158.30.2
+
+! Route remote FL networks through tunnel
+ip route 192.168.10.0 255.255.255.0 10.100.100.2
+ip route 192.168.20.0 255.255.255.0 10.100.100.2
+ip route 192.168.30.0 255.255.255.0 10.100.100.2
+ip route 192.168.40.0 255.255.255.0 10.100.100.2
+ip route 192.168.50.0 255.255.255.0 10.100.100.2
+ip route 192.168.110.0 255.255.255.0 10.100.100.2
+ip route 192.168.120.0 255.255.255.0 10.100.100.2
+ip route 192.168.130.0 255.255.255.0 10.100.100.2
+
+
+
+
+FL 
+
+
+crypto isakmp policy 10
+ encr aes
+ hash md5
+ authentication pre-share
+ group 2
+
+crypto isakmp key ML_FL_key address 207.158.20.2
+
+crypto ipsec transform-set FL_TSET esp-aes 128 esp-md5-hmac
+
+
+crypto map FL_MAP 10 ipsec-isakmp
+ set peer 207.158.20.2
+ set transform-set FL_TSET
+ match address FL_ML_ACL
+
+interface s0/2/0
+ crypto map FL_MAP
+
+interface Tunnel0
+ ip address 10.100.100.2 255.255.255.252
+ tunnel source s0/2/0
+ tunnel destination 207.158.20.2
+
+ip access-list extended FL_ML_ACL
+ permit gre host 207.158.30.2 host 207.158.10.2
+
+
+ip route 10.10.1.0 255.255.255.0 10.100.100.1
+ip route 10.10.2.0 255.255.255.0 10.100.100.1
+
