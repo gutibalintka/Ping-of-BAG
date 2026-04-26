@@ -1,0 +1,634 @@
+Konfigurációk
+
+
+Routerek konfigurációja
+
+
+
+R_Fejleszto
+
+
+ena
+clo set 12:00:00 01 march 2026
+conf t
+host R_Fejleszto
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+ipv6 uni
+
+int s0/1/0
+ipv6 add 2001:db8:10:20::1/64
+des R_Konferencia fele
+clock rate 4000000
+no sh
+ipv6 enable
+ipv6 eigrp 1
+exit 
+
+int g0/0/0
+ipv6 add 2001:db8:10:10::1/64
+des MLS_Fejleszto fele
+no sh
+ipv6 enable
+ipv6 eigrp 1
+exit
+
+ipv6 router eigrp 1
+eigrp router-id 1.1.1.1
+no sh
+ex
+
+ipv6 access-list ONLY_RG_SSH
+permit ipv6 host 2001:db8:10:10::20 any
+deny ipv6 any any
+
+line vty 0 15
+transport input ssh
+ipv6 access-class ONLY_RG_SSH in
+
+int s0/1/0
+ip add 192.168.20.1 255.255.255.0
+clock rate 4000000
+des R_Konferencia fele IPv4
+no sh
+exit
+
+router eigrp 1
+eigrp router-id 1.1.1.1
+Network 192.168.110.0 0.0.0.255
+Network 192.168.120.0 0.0.0.255
+Network 207.158.30.0 0.0.0.3
+no auto-sum
+
+
+copy running-config startup-config
+
+
+R_Konferencia
+
+
+ena
+clo set 12:00:00 01 march 2026
+conf t
+host R_Konferencia
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+ipv6 uni
+
+ipv6 uni
+
+int s0/1/0
+ipv6 add 2001:db8:10:20::2/64
+des R_Fejleszto fele
+no sh
+ipv6 enable
+ipv6 eigrp 1
+exit 
+
+int s0/1/1
+ipv6 add 2001:db8:20:10::1/64
+des R_Iroda fele
+no sh
+ipv6 enable
+ipv6 eigrp 1
+exit
+
+int g0/0/1
+ip add 192.168.10.1 255.255.255.0
+des SW_Konferencia fele
+no sh
+ipv6 enable
+ipv6 eigrp 1
+exit
+
+ip dhcp pool WIFI
+network 192.168.10.0 255.255.255.0
+default-router 192.168.10.1
+dns-server 192.168.10.1
+
+ipv6 router eigrp 1
+eigrp router-id 2.2.2.2
+no sh
+ex
+
+ipv6 access-list ONLY_RG_SSH
+permit ipv6 host 2001:db8:10:10::20 any
+deny ipv6 any any
+
+line vty 0 15
+transport input ssh
+ipv6 access-class ONLY_RG_SSH in
+
+int s0/1/0
+ip add 192.168.20.2 255.255.255.0
+des R_Fejleszto fele IPv4
+no sh
+
+int s0/1/1
+ip add 192.168.30.1 255.255.255.0
+clock rate 4000000
+des R_Iroda fele IPv4
+no sh
+
+router eigrp 1
+eigrp router-id 2.2.2.2
+Network 192.168.130.0 0.0.0.255
+Network 192.168.110.0 0.0.0.255
+Network 192.168.10.0 0.0.0.255
+no auto-sum
+
+copy running-config startup-config
+
+
+
+
+R_Iroda
+
+ena
+clo set 12:00:00 22 march 2026
+conf t
+host R_Iroda
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+ipv6 uni
+
+int s0/1/1
+ipv6 add 2001:db8:20:10::2/64
+des R_Konferencia fele
+no sh
+ipv6 enable
+ipv6 eigrp 1
+exit
+
+int s0/1/1
+ip add 192.168.130.2 255.255.255.0
+des R_Konferencia fele
+no sh
+
+
+int g0/0/0.30
+ipv6 add 2001:db8:10:50::1/64
+no sh
+
+
+
+ip dhcp pool vlan30
+Network 192.168.50.0 255.255.255.0
+default-router 192.168.50.1 
+dns-server 8.8.8.8
+
+int g0/0/0.30
+ip add 192.168.50.1 255.255.255.0
+no sh
+
+
+ip dhcp pool vlan20
+Network 192.168.40.0 255.255.255.0
+default-router 192.168.40.1 
+dns-server 8.8.8.8
+
+int g0/0/1.20
+ip add 192.168.40.1 255.255.255.0
+no sh
+
+
+
+ip dhcp pool vlan10
+Network 192.168.30.0 255.255.255.0
+default-router 192.168.30.1 
+dns-server 8.8.8.8
+
+int g0/0/2.10
+ip add 192.168.30.1 255.255.255.0
+no sh
+
+
+ipv6 dhcp pool VLAN10
+address prefix 2001:db8:10:30::/64
+dns-server 2001:4860:4860::8888
+domain-name Thermofisher.com
+
+ipv6 dhcp pool VLAN20
+address prefix 2001:db8:10:40::/64
+dns-server 2001:4860:4860::8888
+domain-name Thermofisher.com
+
+
+ipv6 dhcp pool VLAN30
+address prefix 2001:db8:10:50::/64
+dns-server 2001:4860:4860::8888
+domain-name Thermofisher.com
+
+
+int g0/0/2.10
+end dot1q 10
+ipv6 add 2001:db8:10:30::1/64
+ipv6 nd managed-config-flag
+ipv6 enable
+ipv6 dhcp server VLAN10
+
+
+int g0/0/1.20
+enc dot1q 20
+ipv6 add 2001:DB8:10:40::1/64
+ipv6 nd managed-config-flag
+ipv6 enable
+ipv6 dhcp server VLAN20
+
+
+int g0/0/0.30
+enc dot1q 30
+ipv6 add 2001:DB8:10:50::1/64
+ipv6 nd managed-config-flag
+ipv6 enable
+ipv6 dhcp server VLAN30
+
+ipv6 router eigrp 1
+eigrp router-id 3.3.3.3
+no sh
+ex
+
+ipv6 access-list ONLY_RG_SSH
+permit ipv6 host 2001:db8:10:10::20 any
+deny ipv6 any any
+
+line vty 0 15
+transport input ssh
+ipv6 access-class ONLY_RG_SSH in
+
+int s0/1/1
+ip add 192.168.30.2 255.255.255.0
+des R_Konferencia fele IPv4
+no sh
+exit
+
+router eigrp 1
+eigrp router-id 3.3.3.3
+Network 192.168.30.0 0.0.0.255
+Network 192.168.40.0 0.0.0.255
+Network 192.168.50.0 0.0.0.255
+Network 192.168.130.0 0.0.0.255
+
+copy running-config startup-config
+
+
+
+
+
+
+
+
+Switchek konfigurációja
+
+
+
+
+SW_Iroda
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host Sw_Iroda
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+vlan 10
+name VLAN10
+vlan 20
+name VLAN20
+vlan 30
+name VLAN30
+vlan 100
+name NATIVE
+vlan 999
+name BlackHole
+
+
+int g0/2
+sw mode trunk
+sw trunk all vlan 10,100
+sw trunk nat vlan 100
+no sh
+exit
+
+int rang f0/1-6
+sw mode acc
+sw acc vlan 10
+no sh
+exit
+
+int rang f0/7-24
+sh
+sw mode acc
+sw acc vlan 999
+
+int vlan 999
+sh
+
+
+
+
+SW_Kutatólabor
+
+clo set 12:00:00 01 march 2026
+conf t
+host SW_Kutatólabor
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+vlan 10
+name VLAN10
+vlan 20
+name VLAN20
+vlan 30
+name VLAN30
+vlan 100
+name NATIVE
+vlan 999
+name BlackHole
+
+int g0/1
+sw mode trunk
+sw trunk all vlan 30,100
+sw trunk nat vlan 100
+no sh
+exit
+
+int rang f0/1-3
+sw acc vlan 30
+no sh
+
+int rang f0/4-24
+sw mode acc 
+sw acc vlan 999
+
+int vlan 999
+sh
+
+
+
+
+MLS_Fejlesztő
+
+ena
+clo set 12:00:00 24 march 2026
+conf t
+host MLS_Fejleszt0
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+vlan 10
+name VLAN10
+vlan 20
+name VLAN20
+vlan 30
+name VLAN30
+vlan 100
+name NATIVE
+vlan 999
+name BlackHole
+
+int rang g1/0/7-g1/0/24, g1/1/1-g1/1/4
+sw mode acc
+sw acc vlan 999
+
+int vlan 999
+sh
+
+
+
+
+Switch_Javítórészleg
+
+
+ena
+clo set 12:00:00 01 march 2026
+conf t
+host SW_Javítórészleg
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+ipv6 uni
+
+vlan 10
+name VLAN10
+vlan 20
+name VLAN20
+vlan 30
+name VLAN30
+vlan 100
+name NATIVE
+vlan 999
+name BlackHole
+
+int g0/1
+sw mode trunk
+no sh
+exit
+
+int rang f0/1-3
+sw mode acc
+sw acc vlan 20
+no sh
+exit
+
+int rang f0/4-24
+sw mode acc
+sw acc vlan 999
+int vlan 999
+sh
+exit
+
+
+SW_Konferencia
+
+
+ena
+clo set 12:00:00 01 march 2026
+conf t
+host SW_Javítórészleg
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+
+vlan 10
+name VLAN10
+vlan 20
+name VLAN20
+vlan 30
+name VLAN30
+vlan 100
+name NATIVE
+vlan 999
+name BlackHole
+
+int rang f0/2, f0/4-24
+sw mode acc
+sw acc vlan 999
+
+int vlan 999
+sh
