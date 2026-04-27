@@ -1,0 +1,20 @@
+access-list OUTSIDE-IN extended permit ip 10.10.1.0 255.255.255.0 object WORKSPACE
+access-list OUTSIDE-IN extended permit ip 10.10.2.0 255.255.255.0 object WORKSPACE
+access-list OUTSIDE-IN extended permit ip 192.168.0.0 255.255.255.0 object WORKSPACE
+access-list OUTSIDE-IN extended permit icmp any object WORKSPACE
+access-list INSIDE-IN extended permit ip object WORKSPACE any
+access-list INSIDE-IN extended deny ip object KONYHA 10.10.1.0 255.255.255.0
+access-list INSIDE-IN extended deny ip object KONYHA 10.10.2.0 255.255.255.0
+access-list INSIDE-IN extended deny ip object KONYHA 192.168.0.0 255.255.255.0
+access-list INSIDE-IN extended deny ip object KONYHA 172.16.0.0 255.255.0.0
+access-list INSIDE-IN extended deny ip object KONFERENCIA 10.10.1.0 255.255.255.0
+access-list INSIDE-IN extended deny ip object KONFERENCIA 10.10.2.0 255.255.255.0
+access-list INSIDE-IN extended deny ip object KONFERENCIA 192.168.0.0 255.255.255.0
+access-list INSIDE-IN extended deny ip object KONFERENCIA 172.16.0.0 255.255.0.0
+access-list INSIDE-IN extended permit ip object KONYHA any
+access-list INSIDE-IN extended permit ip object KONFERENCIA any
+access-list INSIDE-IN extended permit icmp any any
+access-list INSIDE-IN extended deny ip any any
+
+access-group OUTSIDE-IN in interface OUTSIDE
+access-group INSIDE-IN in interface INSIDE
