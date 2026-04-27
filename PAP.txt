@@ -1,0 +1,24 @@
+R_Fejleszto
+
+int Se0/2/0
+enc ppp
+ppp auth pap
+ppp pap sent-user RG pass Cisco123
+
+Fejleszto_ISP
+int Se0/1/0
+enc ppp
+ppp auth pap
+ppp pap sent-user RG pass Cisco123
+
+ML_ISP
+int Se0/1/0
+enc ppp
+ppp auth pap
+ppp pap sent-user ISP_ML pass Cisco123 
+
+ML_R
+int Se0/0/0
+enc ppp
+ppp auth pap
+ppp pap sent-user RG pass Cisco123
