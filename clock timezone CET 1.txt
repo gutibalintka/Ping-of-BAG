@@ -1,0 +1,5 @@
+clock timezone CET 1
+ntp server 10.10.1.6
+ntp authentication-key 180 md5 Cisco123
+ntp trusted-key 180
+ntp server 10.10.1.6 key 180
