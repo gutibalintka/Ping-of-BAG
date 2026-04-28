@@ -1,0 +1,147 @@
+from netmiko import ConnectHandler
+ 
+switches = [
+ 
+    # ================= SW1 =================
+    {
+        "name": "SW1",
+        "device": {
+            "device_type": "cisco_ios",
+            "host": "192.168.52.129",
+            "username": "admin",
+            "password": "cisco",
+        },
+        "config": [
+            # SW2 → Po1
+            "interface e0/3",
+            "switchport mode trunk",
+            "channel-group 1 mode active",
+            "exit",
+ 
+            "interface e1/0",
+            "switchport mode trunk",
+            "channel-group 1 mode passive",
+            "exit",
+ 
+            "interface port-channel1",
+            "switchport mode trunk",
+            "exit",
+ 
+            # SW3 → Po2
+            "interface e0/1",
+            "switchport mode trunk",
+            "channel-group 2 mode active",
+            "exit",
+ 
+            "interface e0/2",
+            "switchport mode trunk",
+            "channel-group 2 mode passive",
+            "exit",
+ 
+            "interface port-channel2",
+            "switchport mode trunk",
+        ]
+    },
+ 
+    # ================= SW2 =================
+    {
+        "name": "SW2",
+        "device": {
+            "device_type": "cisco_ios",
+            "host": "192.168.52.131",
+            "username": "admin",
+            "password": "cisco",
+        },
+        "config": [
+            # SW1 → Po1
+            "interface e0/0",
+            "switchport mode trunk",
+            "channel-group 1 mode passive",
+            "exit",
+ 
+            "interface e0/1",
+            "switchport mode trunk",
+            "channel-group 1 mode active",
+            "exit",
+ 
+            "interface port-channel1",
+            "switchport mode trunk",
+            "exit",
+ 
+            # SW3 → Po3
+            "interface e0/3",
+            "switchport mode trunk",
+            "channel-group 3 mode active",
+            "exit",
+ 
+            "interface e1/0",
+            "switchport mode trunk",
+            "channel-group 3 mode passive",
+            "exit",
+ 
+            "interface port-channel3",
+            "switchport mode trunk",
+        ]
+    },
+ 
+    # ================= SW3 =================
+    {
+        "name": "SW3",
+        "device": {
+            "device_type": "cisco_ios",
+            "host": "192.168.52.132",
+            "username": "admin",
+            "password": "cisco",
+        },
+        "config": [
+            # SW1 → Po2
+            "interface e0/1",
+            "switchport mode trunk",
+            "channel-group 2 mode passive",
+            "exit",
+ 
+            "interface e0/2",
+            "switchport mode trunk",
+            "channel-group 2 mode active",
+            "exit",
+ 
+            "interface port-channel2",
+            "switchport mode trunk",
+            "exit",
+ 
+            # SW2 → Po3
+            "interface e0/3",
+            "switchport mode trunk",
+            "channel-group 3 mode passive",
+            "exit",
+ 
+            "interface e1/0",
+            "switchport mode trunk",
+            "channel-group 3 mode active",
+            "exit",
+ 
+            "interface port-channel3",
+            "switchport mode trunk",
+        ]
+    },
+]
+ 
+# FUTTATÁS
+for sw in switches:
+    print(f"\nConnecting to {sw['name']} ({sw['device']['host']})...")
+ 
+    try:
+        conn = ConnectHandler(**sw["device"])
+ 
+        print(conn.send_config_set(sw["config"]))
+ 
+        print("\nEtherChannel check:")
+        print(conn.send_command("show etherchannel summary"))
+ 
+        conn.save_config()
+        conn.disconnect()
+ 
+    except Exception as e:
+        print(f"Hiba: {e}")
+ 
+print("\nKész.")
