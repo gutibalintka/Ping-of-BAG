@@ -1,0 +1,301 @@
+ML_R
+
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host ML_R
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+security pass min 8
+login block-for 120 attempts 5 within 25
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+!alapkonfig vege-------
+
+int g0/0
+ip add 10.10.1.1 255.255.255.0
+no sh
+ip help 10.10.1.6
+des Lab S fele
+
+int g0/0.1
+enca dot1q 2
+ip add 10.10.2.1 255.255.255.0
+ip help 10.10.1.6
+des vendeg vlan
+
+
+ex
+!portok-----------
+
+
+
+
+
+RG_S
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host RG_S
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+!alapkonfig vege-------
+
+int vlan 1
+ip add 10.10.1.5 255.255.255.0
+des vlan 1 interface
+no sh
+
+vlan 2
+name vendeg
+
+vlan 100
+name BH
+int r f0/5-24
+swit mod acc
+swit acc vlan 100
+int r f0/1-24
+swit mod acc
+swit port-sec mac-add sticky
+swit port sec viol rest
+swit port max 2
+ex
+ip dhcp snoop
+ip dhcp snoop vlan 1
+int r g0/1-2,f0/3
+ip dhcp snooping trust
+
+int r f0/22-24,g0/1-2
+swit mod trunk
+swit nonego
+swit trunk all vlan 1,2
+
+
+
+
+I_S
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host I_S
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+!alapkonfig vege-------
+
+int vlan 1
+ip add 10.10.1.3 255.255.255.0
+des vlan 1 interface
+no sh
+
+vlan 2
+name vendeg
+
+vlan 100
+name BH
+int r f0/7-23
+swit mod acc
+swit acc vlan 100
+int r f0/1-24
+swit mod acc
+swit port-sec mac-add sticky
+swit port-sec viol rest
+swit port max 2
+int r g0/1-2
+swit mod acc
+swit acc vlan 100
+sh
+
+ex
+ip dhcp snoop
+ip dhcp snoop vlan 1
+int f0/24
+ip dhcp snooping trust
+
+int f0/24
+swit mod trunk
+swit nonego
+swit trunk all vlan 1,2
+
+
+T_S
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host T_S
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+!alapkonfig vege-------
+
+int vlan 1
+ip add 10.10.1.3 255.255.255.0
+des vlan 1 interface
+
+vlan 100
+name BH
+int r f0/5-22,g0/1-2
+swit mod acc
+swit acc vlan 100
+int r f0/1-24
+swit mod acc
+swit port-sec mac-add sticky
+swit port-sec viol rest
+swit port max 2
+ex
+ip dhcp snoop
+ip dhcp snoop vlan 1
+int f0/23
+ip dhcp snooping trust
+
+int f0/23
+swit mod trunk
+swit nonego
+swit trunk all vlan 1,2
+
+
+Lab_S
+
+ena
+clo set 12:00:00 16 jan 2026
+conf t
+host Lab_S
+ena sec class123
+no ip domain-l
+banner motd "Maganterulet!"
+service password-encryption
+ip domain-name Thermofisher.com
+username RG priv 15 pass Cisco123
+crypto key gen rsa
+4096
+ip ssh ver 2
+line con 0
+pass Cisco123
+login
+logging sync
+exe 10
+exit
+line vty 0 15
+pass Cisco123
+login
+exe 10
+login local
+transport input ssh
+!alapkonfig vege-------
+
+int vlan 1
+ip add 10.10.1.2 255.255.255.0
+des vlan 1 interface
+no sh
+
+vlan 100
+name BH
+int r f0/8-21
+swit mod acc
+swit nonego
+swit acc vlan 100
+int r f0/1-24
+swit mod acc
+swit port-sec mac-add sticky
+swit port-sec viol rest
+swit port max 2
+ex
+ip dhcp snoop
+ip dhcp snoop vlan 1
+int r g0/1-2,f0/22,f0/24
+ip dhcp snooping trust
+
+int r f0/3,g0/1-2
+swit mod trunk
+swit nonego
+swit trunk all vlan 1,2
+
+
+WLC
+
+RG
+Cisco123
+
+ML_Dolg
+class123
+
+ML_vendeg
+nincs jelszó 
+
+
