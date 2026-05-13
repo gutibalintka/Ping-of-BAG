@@ -1,0 +1,22 @@
+Központ_ISP
+ip route 0.0.0.0 0.0.0.0 207.158.10.2
+router eigrp 10
+eigrp router-id 4.4.4.4
+red static
+network 207.158.10.0 0.0.0.3
+network 10.10.110.0 0.0.0.3 
+
+Mintavételi labor ISP
+router eigrp 10
+eigrp router-id 5.5.5.5
+network 207.158.20.0 0.0.0.3
+network 10.10.110.0 0.0.0.3
+network 10.10.130.0 0.0.0.3
+
+Fejlesztési és innovációs labor ISP
+router eigrp 10
+eigrp router-id 7.7.7.7
+red static
+network 207.158.30.0 0.0.0.3
+network 10.10.130.0 0.0.0.3
+
